@@ -35,6 +35,13 @@
             <span th:text="'Tervetuloa ' + ${message} + '!'"></span>
         </h2>
     </div>
+    <div>
+        <form method="GET" action="/hakutulos">
+            Haku:<br/>
+            <input type="text" name="hakusana"/><br/>
+            <input type="submit" value="Hae"/>
+        </form>
+    </div>
 
 </div>
 <!-- /.container -->

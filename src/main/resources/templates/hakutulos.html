@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Hakutulos</title>
 </head>
 <body>
-$END$
+<div class="">
+    <ol>
+        <li th:each="henkilo : ${henkilot}">
+            <span th:text="${henkilo.etunimi} {henkilo.sukunimi}">Henkilön nimi </span>
+        </li>
+    </ol>
+</div>
 </body>
 </html>
