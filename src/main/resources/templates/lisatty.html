@@ -2,13 +2,14 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Hakutulos</title>
+    <title>Lisätty</title>
 </head>
 <body>
 <div>
     <ol>
-        <li th:each="henkilo : ${henkilot}" th:text="${henkilo.toString()}"></li>
+        <li th:each="lisatty : ${lisatty}" th:text="${lisatty.toString()}"></li>
     </ol>
 </div>
+<a href="/">Palaa takaisin aloitussivulle</a>
 </body>
 </html>

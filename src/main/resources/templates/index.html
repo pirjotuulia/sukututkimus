@@ -2,13 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Spring Boot Thymeleaf Hello World Example</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <link rel="stylesheet" type="text/css"
-          href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+          href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
 
     <link rel="stylesheet" th:href="@{/css/main.css}"
-          href="../../css/main.css" />
+          href="../../css/main.css"/>
 
 </head>
 <body>
@@ -32,17 +32,33 @@
     <div class="starter-template">
         <h1>Sukusivusto</h1>
         <h2>
-            <span th:text="'Tervetuloa ' + ${message} + '!'"></span>
+            <!--<span th:text="'Tervetuloa ' + ${message} + '!'"></span>-->
         </h2>
     </div>
     <div>
+        <ol>
+            <li th:each="henkilo : ${henkilot}" th:text="${henkilo.toString()}"></li>
+        </ol>
+    </div>
+    <div>
         <form method="GET" action="/hakutulos">
-            Haku:<br/>
+            Haku nimellä:<br/>
             <input type="text" name="hakusana"/><br/>
             <input type="submit" value="Hae"/>
         </form>
+        <form method="GET" action="/hakutulos">
+            Haku syntymäajalla (VVVV-KK-PP):<br/>
+            <input type="text" name="hakusana"/><br/>
+            <input type="submit" value="Hae"/>
+        </form>
+        <form method="POST" action="/lisatty">
+            Lisaa henkilö:<br/>
+            <input type="text" name="etunimi"/><br/>
+            <input type="text" name="sukunimi"/><br/>
+            <input type="text" name="syntymaaika"/>(VVVV-KK-PP)<br/>
+            <input type="submit" value="Lisää"/>
+        </form>
     </div>
-
 </div>
 <!-- /.container -->
 

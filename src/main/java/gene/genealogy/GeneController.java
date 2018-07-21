@@ -1,33 +1,62 @@
 package gene.genealogy;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import gene.domain.Henkilo;
+import gene.domain.HenkiloDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class GeneController {
     @Value("${welcome.message:test}")
     private String message;
+    private List<Henkilo> henkilot;
+    private HenkiloDAO henkiloDAO;
 
-    @RequestMapping("/")
-    public String welcome(Map<String, Object> model) {
-        model.put("message", this.message);
+    public GeneController(@Autowired HenkiloDAO henkiloDAO) {
+        this.henkiloDAO = henkiloDAO;
+    }
+
+    @RequestMapping(value="/", method=RequestMethod.GET)
+    public String index(Model model) {
+        henkilot = henkiloDAO.kaikkiHenkilot();
+        model.addAttribute("henkilot", henkilot);
         return "index";
     }
 
+    @RequestMapping(value ="/lisatty", method = RequestMethod.POST)
+    public String lisaa(@RequestParam String etunimi, String sukunimi, String syntymaaika, Model model) {
+        Henkilo lisattava = new Henkilo(etunimi, sukunimi, LocalDate.parse(syntymaaika));
+        lisattava = henkiloDAO.lisaaHenkilo(lisattava);
+        model.addAttribute("lisatty", lisattava);
+        return "lisatty";
+    }
+
+    @RequestMapping(value="/henkilokortti/{id}", method=RequestMethod.GET)
+    public String naytaHenkilo(@PathVariable String id, Model model) {
+        Henkilo henkilo = henkiloDAO.haeHenkiloIdlla(id);
+        model.addAttribute("henkilo", henkilo);
+        return "henkilokortti";
+    }
+
     @RequestMapping("/hakutulos")
-    @ResponseBody
-    public String haku(Map<String, Object> model) {
-        List<Henkilo> henkilot = new ArrayList<>();
-        henkilot.add(new Henkilo("Pirjo", "Leppänen", LocalDate.of(1974, 2, 10)));
-        model.put("henkilot", henkilot);
+    public String haku(@RequestParam String hakusana, Model model) {
+        if (hakusana.contains("[0-9]")) {
+//            haeSyntymaAjalla();
+        } else {
+            List<Henkilo> haetut = henkiloDAO.haetutHenkilot(hakusana);
+            if (haetut.isEmpty()) {
+                model.addAttribute("henkilot", "Hakuasi vastaavia henkilöitä ei löytynyt");
+            } else {
+                model.addAttribute("henkilot", haetut);
+            }
+        }
         return "hakutulos";
     }
 }
