@@ -11,7 +11,7 @@ public class Henkilo {
     private LocalDate syntymaAika;
     private int id;
     private Integer aiti;
-    private int isa;
+    private Integer isa;
     private Henkilo aitiHenkilo;
     private Henkilo isaHenkilo;
 
@@ -29,8 +29,11 @@ public class Henkilo {
         this.syntymaAika = syntymaAika;
     }
 
-    public int getAiti() {
-        return aiti;
+    public Integer getAiti() {
+        if (aiti!=null) {
+            return aiti;
+        }
+        return 0;
     }
 
     public void setAiti(Integer aiti) {
@@ -39,8 +42,11 @@ public class Henkilo {
         }
     }
 
-    public int getIsa() {
-        return isa;
+    public Integer getIsa() {
+        if (isa!=null) {
+            return isa;
+        }
+        return 0;
     }
 
     public void setIsa(Integer isa) {
@@ -95,5 +101,19 @@ public class Henkilo {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isaTiedossa() {
+        if (isa!=null) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean aitiTiedossa() {
+        if (aiti!=null) {
+            return true;
+        }
+        return false;
     }
 }

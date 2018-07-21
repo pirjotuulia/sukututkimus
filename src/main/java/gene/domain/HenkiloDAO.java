@@ -93,4 +93,13 @@ public class HenkiloDAO {
                 new BeanPropertyRowMapper(Henkilo.class));
         return h;
     }
+
+    public void lisaaVanhemmatHenkiloina(Henkilo henkilo) {
+        if (henkilo.getAiti()!=0) {
+            henkilo.setAitiHenkilo(haeHenkiloIdlla(String.valueOf(henkilo.getAiti())));
+        }
+        if (henkilo.getIsa()!=0) {
+            henkilo.setIsaHenkilo(haeHenkiloIdlla(String.valueOf(henkilo.getIsa())));
+        }
+    }
 }

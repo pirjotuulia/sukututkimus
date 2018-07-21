@@ -6,8 +6,19 @@
 </head>
 <body>
 <div>
-    <p th:text="${henkilo.toString()}">
-    </p>
+    <p th:text="${henkilo.toString()}"></p>
+    <table>
+        <tr>
+            <td>Isä: </td>
+            <td th:if="${henkilo.isaTiedossa()}" th:text="${henkilo.isaHenkilo.toString()}"></td>
+            <td th:unless="${henkilo.isaTiedossa()}">Isä ei ole tiedossa.</td>
+        </tr>
+        <tr>
+            <td>Äiti: </td>
+            <td th:if="${henkilo.aitiTiedossa()}" th:text="${henkilo.aitiHenkilo.toString()}"></td>
+            <td th:unless="${henkilo.aitiTiedossa()}">Äiti ei ole tiedossa.</td>
+        </tr>
+    </table>
 </div>
 <a href="/">Palaa takaisin aloitussivulle</a>
 </body>

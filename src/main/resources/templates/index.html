@@ -36,9 +36,9 @@
         </h2>
     </div>
     <div>
-        <ol>
+        <ul>
             <a th:each="henkilo : ${henkilot}" th:href="@{/henkilokortti/{id}(id=${henkilo.id})}"><li th:text="${henkilo.toString()}"></li></a>
-        </ol>
+        </ul>
     </div>
     <div>
         <form method="GET" action="/hakutulos">

@@ -41,6 +41,7 @@ public class GeneController {
     @RequestMapping(value="/henkilokortti/{id}", method=RequestMethod.GET)
     public String naytaHenkilo(@PathVariable String id, Model model) {
         Henkilo henkilo = henkiloDAO.haeHenkiloIdlla(id);
+        henkiloDAO.lisaaVanhemmatHenkiloina(henkilo);
         model.addAttribute("henkilo", henkilo);
         return "henkilokortti";
     }

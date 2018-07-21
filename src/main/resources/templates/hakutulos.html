@@ -6,9 +6,9 @@
 </head>
 <body>
 <div>
-    <ol>
-        <li th:each="henkilo : ${henkilot}" th:text="${henkilo.toString()}"></li>
-    </ol>
+    <ul>
+        <a th:each="henkilo : ${henkilot}" th:href="@{/henkilokortti/{id}(id=${henkilo.id})}"><li th:text="${henkilo.toString()}"></li></a>
+    </ul>
 </div>
 </body>
 </html>
