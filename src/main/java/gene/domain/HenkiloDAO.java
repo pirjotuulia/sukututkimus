@@ -62,9 +62,20 @@ public class HenkiloDAO {
             }
             h = (haeHenkilo(h).get(0));
             return h;
-        } else {
-            return null;
         }
+        return null;
+    }
+
+    public Henkilo paivitaHenkilo(Henkilo paivitettava, String aiti, String isa) {
+        if (haeHenkilo(paivitettava) != null) {
+            int onnistui = jdbcTemplate.update("UPDATE henkilo SET aiti=?, isa=? WHERE id=?;", new Object[]{aiti, isa, paivitettava.getId()});
+            if (onnistui > 0) {
+                paivitettava.setAiti(Integer.parseInt(aiti));
+                paivitettava.setIsa(Integer.parseInt(isa));
+                return paivitettava;
+            }
+        }
+        return null;
     }
 
     public List<Henkilo> haeHenkilo(Henkilo h) {
@@ -95,10 +106,10 @@ public class HenkiloDAO {
     }
 
     public void lisaaVanhemmatHenkiloina(Henkilo henkilo) {
-        if (henkilo.getAiti()!=0) {
+        if (henkilo.getAiti() != 0) {
             henkilo.setAitiHenkilo(haeHenkiloIdlla(String.valueOf(henkilo.getAiti())));
         }
-        if (henkilo.getIsa()!=0) {
+        if (henkilo.getIsa() != 0) {
             henkilo.setIsaHenkilo(haeHenkiloIdlla(String.valueOf(henkilo.getIsa())));
         }
     }

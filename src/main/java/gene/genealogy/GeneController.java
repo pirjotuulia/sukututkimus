@@ -23,14 +23,14 @@ public class GeneController {
         this.henkiloDAO = henkiloDAO;
     }
 
-    @RequestMapping(value="/", method=RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(Model model) {
         henkilot = henkiloDAO.kaikkiHenkilot();
         model.addAttribute("henkilot", henkilot);
         return "index";
     }
 
-    @RequestMapping(value ="/lisatty", method = RequestMethod.POST)
+    @RequestMapping(value = "/lisatty", method = RequestMethod.POST)
     public String lisaa(@RequestParam String etunimi, String sukunimi, String syntymaaika, Model model) {
         Henkilo lisattava = new Henkilo(etunimi, sukunimi, LocalDate.parse(syntymaaika));
         lisattava = henkiloDAO.lisaaHenkilo(lisattava);
@@ -38,12 +38,20 @@ public class GeneController {
         return "lisatty";
     }
 
-    @RequestMapping(value="/henkilokortti/{id}", method=RequestMethod.GET)
+    @RequestMapping(value = "/henkilokortti/{id}", method = RequestMethod.GET)
     public String naytaHenkilo(@PathVariable String id, Model model) {
         Henkilo henkilo = henkiloDAO.haeHenkiloIdlla(id);
         henkiloDAO.lisaaVanhemmatHenkiloina(henkilo);
         model.addAttribute("henkilo", henkilo);
         return "henkilokortti";
+    }
+
+    @RequestMapping(value = "/henkilokortti/{id}", method = RequestMethod.POST)
+    public String paivita(@PathVariable String id, @RequestParam String aiti, String isa, Model model) {
+        Henkilo paivitettava = henkiloDAO.haeHenkiloIdlla(id);
+        paivitettava = henkiloDAO.paivitaHenkilo(paivitettava, aiti, isa);
+        model.addAttribute("lisatty", paivitettava);
+        return "redirect:/henkilokortti/{id}";
     }
 
     @RequestMapping("/hakutulos")
