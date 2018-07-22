@@ -3,6 +3,7 @@ package gene.genealogy;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import gene.domain.Henkilo;
 import gene.domain.HenkiloDAO;
@@ -47,9 +48,25 @@ public class GeneController {
     }
 
     @RequestMapping(value = "/henkilokortti/{id}", method = RequestMethod.POST)
-    public String paivita(@PathVariable String id, @RequestParam String aiti, String isa, Model model) {
+    public String lisaaTietoja(@PathVariable String id, @RequestParam Map<String, String> arvot, Model model) {
         Henkilo paivitettava = henkiloDAO.haeHenkiloIdlla(id);
-        paivitettava = henkiloDAO.paivitaHenkilo(paivitettava, aiti, isa);
+        paivitettava = henkiloDAO.paivitaHenkilo(paivitettava, arvot);
+        model.addAttribute("lisatty", paivitettava);
+        return "redirect:/henkilokortti/{id}";
+    }
+
+    @RequestMapping(value = "/paivita/{id}", method = RequestMethod.GET)
+    public String naytaPaivita(@PathVariable String id, Model model) {
+        Henkilo henkilo = henkiloDAO.haeHenkiloIdlla(id);
+        henkiloDAO.lisaaVanhemmatHenkiloina(henkilo);
+        model.addAttribute("henkilo", henkilo);
+        return "paivita";
+    }
+
+    @RequestMapping(value = "/paivita/{id}", method = RequestMethod.POST)
+    public String paivita(@PathVariable String id, @RequestParam Map<String, String> paivitettavat, Model model) {
+        Henkilo paivitettava = henkiloDAO.haeHenkiloIdlla(id);
+        paivitettava = henkiloDAO.paivitaHenkilo(paivitettava, paivitettavat);
         model.addAttribute("lisatty", paivitettava);
         return "redirect:/henkilokortti/{id}";
     }

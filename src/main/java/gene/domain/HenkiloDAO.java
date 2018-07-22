@@ -10,7 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class HenkiloDAO {
@@ -66,12 +68,33 @@ public class HenkiloDAO {
         return null;
     }
 
-    public Henkilo paivitaHenkilo(Henkilo paivitettava, String aiti, String isa) {
+    public Henkilo paivitaHenkilo(Henkilo paivitettava, Map<String, String> paivitettavat) {
         if (haeHenkilo(paivitettava) != null) {
-            int onnistui = jdbcTemplate.update("UPDATE henkilo SET aiti=?, isa=? WHERE id=?;", new Object[]{aiti, isa, paivitettava.getId()});
+            List<String> avaimet = new ArrayList<>();
+            for (String kentta : paivitettavat.keySet()) {
+                if (!paivitettavat.get(kentta).isEmpty()) {
+                    avaimet.add(kentta);
+                }
+            }
+            StringBuilder sql = new StringBuilder("UPDATE henkilo SET ");
+            Object[] arvot = new Object[avaimet.size() + 1];
+            int i = 0;
+            for (String avain : avaimet) {
+                sql.append(avain + "=?");
+                arvot[i] = paivitettavat.get(avain);
+                i++;
+                if (i < avaimet.size()) {
+                    sql.append(", ");
+                } else {
+                    sql.append(" ");
+                }
+
+            }
+            sql.append("WHERE id=?;");
+            arvot[i] = paivitettava.getId();
+            int onnistui = jdbcTemplate.update(sql.toString(), arvot);
             if (onnistui > 0) {
-                paivitettava.setAiti(Integer.parseInt(aiti));
-                paivitettava.setIsa(Integer.parseInt(isa));
+                paivitettava = haeHenkiloIdlla(String.valueOf(paivitettava.getId()));
                 return paivitettava;
             }
         }

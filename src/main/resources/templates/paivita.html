@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Päivitä henkilökortti</title>
+</head>
+<body>
+<div>
+    <p th:text="${henkilo.toString()}"></p>
+    <form method="POST" th:action="@{{id}(id=${henkilo.id})}">
+        <table>
+            <tr>
+                <td>Etunimi:</td>
+                <td th:text="${henkilo.etunimi}"></td>
+                <td><input type="text"
+                           placeholder="Etunimi"
+                           name="etunimi"></td>
+            </tr>
+            <tr>
+                <td>Sukunimi:</td>
+                <td th:text="${henkilo.sukunimi}"></td>
+                <td><input type="text"
+                           placeholder="Sukunimi"
+                           name="sukunimi"></td>
+            </tr>
+            <tr>
+                <td>Syntymäaika:</td>
+                <td th:text="${henkilo.syntymaAika.toString()}"></td>
+                <td><input type="text"
+                           placeholder="VVVV-KK-PP"
+                           name="syntymaaika"></td>
+            </tr>
+            <tr>
+                <td>Isä:</td>
+                <td th:if="${henkilo.isaTiedossa()}" th:text="${henkilo.isaHenkilo.toString()}"></td>
+                <td th:unless="${henkilo.isaTiedossa()}">Isä ei ole tiedossa.</td>
+                <td><input type="text"
+                           placeholder="Isän id"
+                           name="isa"></td>
+            </tr>
+            <tr>
+                <td>Äiti:</td>
+                <td th:if="${henkilo.aitiTiedossa()}" th:text="${henkilo.aitiHenkilo.toString()}"></td>
+                <td th:unless="${henkilo.aitiTiedossa()}">Äiti ei ole tiedossa.</td>
+                <td><input type="text"
+                           placeholder="Äidin id"
+                           name="aiti"></td>
+            </tr>
+            <tr><input type="submit" value="Päivitä"></tr>
+        </table>
+    </form>
+</div>
+<a th:href="@{/henkilokortti/{id} (id=${henkilo.id})}">Näytä henkilökortti.</a><br>
+<a href="/">Palaa takaisin aloitussivulle.</a>
+</body>
+</html>
