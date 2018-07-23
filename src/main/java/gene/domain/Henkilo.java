@@ -14,8 +14,10 @@ public class Henkilo {
     private int id;
     private Integer aiti;
     private Integer isa;
+    private Integer puoliso;
     private Henkilo aitiHenkilo;
     private Henkilo isaHenkilo;
+    private Henkilo puolisoHenkilo;
     private List<Henkilo> lapset;
 
     public Henkilo() {
@@ -57,6 +59,30 @@ public class Henkilo {
         if (isa != null) {
             this.isa = isa;
         }
+    }
+
+    public Integer getPuoliso() {
+        if (puoliso!=null) {
+            return puoliso;
+        }
+        return 0;
+    }
+
+    public void setPuoliso(Integer puoliso) {
+        if (puoliso != null) {
+            this.puoliso = puoliso;
+        }
+    }
+
+    public Henkilo getPuolisoHenkilo() {
+        if (puoliso != null) {
+            return puolisoHenkilo;
+        }
+        return null;
+    }
+
+    public void setPuolisoHenkilo(Henkilo puolisoHenkilo) {
+        this.puolisoHenkilo = puolisoHenkilo;
     }
 
     public Henkilo getAitiHenkilo() {
@@ -116,6 +142,13 @@ public class Henkilo {
 
     public boolean aitiTiedossa() {
         if (aiti!=null) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean puoliso() {
+        if (puoliso!=null) {
             return true;
         }
         return false;

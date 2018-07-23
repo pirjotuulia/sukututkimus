@@ -46,7 +46,19 @@
                            placeholder="Äidin id"
                            name="aiti"></td>
             </tr>
-            <tr><input type="submit" value="Päivitä"></tr>
+            <tr>
+                <td>Puoliso:</td>
+                <td th:if="${henkilo.puoliso()}" th:text="${henkilo.puolisoHenkilo.toString()}"></td>
+                <td th:unless="${henkilo.puoliso()}">Puolisoa ei ole tai puoliso ei ole tiedossa</td>
+                <td><input type="text"
+                           placeholder="Puolison id"
+                           name="puoliso"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><input type="submit" value="Päivitä"></td>
+            </tr>
         </table>
     </form>
 </div>

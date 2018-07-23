@@ -125,17 +125,20 @@ public class HenkiloDAO {
         Henkilo h = (Henkilo) jdbcTemplate.queryForObject(
                 "SELECT * FROM henkilo WHERE id=?", new Object[]{id},
                 new BeanPropertyRowMapper(Henkilo.class));
-        h.setLapset(haeLapset(id));
         return h;
     }
 
-    public void lisaaVanhemmatHenkiloina(Henkilo henkilo) {
+    public void lisaaLaheisetHenkiloina(Henkilo henkilo) {
         if (henkilo.getAiti() != 0) {
             henkilo.setAitiHenkilo(haeHenkiloIdlla(String.valueOf(henkilo.getAiti())));
         }
         if (henkilo.getIsa() != 0) {
             henkilo.setIsaHenkilo(haeHenkiloIdlla(String.valueOf(henkilo.getIsa())));
         }
+        if (henkilo.getPuoliso() != 0) {
+            henkilo.setPuolisoHenkilo(haeHenkiloIdlla(String.valueOf(henkilo.getPuoliso())));
+        }
+        henkilo.setLapset(haeLapset(String.valueOf(henkilo.getId())));
     }
 
     public List<Henkilo> haeLapset(String id) {
