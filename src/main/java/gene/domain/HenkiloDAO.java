@@ -99,13 +99,14 @@ public class HenkiloDAO {
             arvot[i] = paivitettava.getId();
             int onnistui = jdbcTemplate.update(sql.toString(), arvot);
             if (onnistui > 0) {
-                paivitettava = haeHenkiloIdlla(String.valueOf(paivitettava.getId()));
-                if (avaimet.contains("puoliso") && paivitettava.getPuolisoHenkilo().getPuoliso() == null || paivitettava.getPuolisoHenkilo().getPuoliso() != paivitettava.getId()) {
-                    Map<String, String> puolisonPaivitettavat = new HashMap<>();
-                    puolisonPaivitettavat.put("puoliso", String.valueOf(paivitettava.getId()));
-                    paivitaHenkilo(String.valueOf(paivitettava.getPuolisoHenkilo().getId()), puolisonPaivitettavat);
+                paivitettava = kaikkiTiedotIdlla(String.valueOf(paivitettava.getId()));
+                if (paivitettava.getPuoliso() != null && paivitettava.getPuoliso() > 0) {
+                    if (avaimet.contains("puoliso") && paivitettava.getPuolisoHenkilo().getPuoliso() == null || paivitettava.getPuolisoHenkilo().getPuoliso() != paivitettava.getId()) {
+                        Map<String, String> puolisonPaivitettavat = new HashMap<>();
+                        puolisonPaivitettavat.put("puoliso", String.valueOf(paivitettava.getId()));
+                        paivitaHenkilo(String.valueOf(paivitettava.getPuolisoHenkilo().getId()), puolisonPaivitettavat);
+                    }
                 }
-                lisaaLaheisetHenkiloina(paivitettava);
                 return paivitettava;
             }
         }

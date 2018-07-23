@@ -31,7 +31,13 @@ public class GeneController {
         return "index";
     }
 
-    @RequestMapping(value = "/lisatty", method = RequestMethod.POST)
+    @RequestMapping(value = "/lisaa", method = RequestMethod.GET)
+    public String lisaaSivulle(Model model) {
+        model.addAttribute("lisaysohje", "Alla voit lisätä tietokantaan uusia suvun jäseniä.");
+        return "lisatty";
+    }
+
+    @RequestMapping(value = "/lisaa", method = RequestMethod.POST)
     public String lisaa(@RequestParam String etunimi, String sukunimi, String syntymaaika, Model model) {
         Henkilo lisattava = new Henkilo(etunimi, sukunimi, LocalDate.parse(syntymaaika));
         lisattava = henkiloDAO.lisaaHenkilo(lisattava);
@@ -67,7 +73,7 @@ public class GeneController {
         return "redirect:/henkilokortti/{id}";
     }
 
-    @RequestMapping("/hakutulos")
+    @RequestMapping("/haku")
     public String haku(@RequestParam String hakusana, Model model) {
         model.addAttribute("hakusana", hakusana);
         if (hakusana.contains("[0-9]")) {

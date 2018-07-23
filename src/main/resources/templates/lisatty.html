@@ -2,14 +2,31 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Lisätty</title>
+    <title>Lisäys</title>
 </head>
 <body>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Sukusivusto</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <table class="nav navbar-nav">
+                <tr>
+                    <td class="active"><a href="/"><h3>Koti</h3></a></td>
+                    <td><a href="/haku?hakusana="><h3>Haku</h3></a></td>
+                    <td><a href="/lisaa"><h3>Lisää jäsen</h3></a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</nav>
 <div>
     <p th:each="lisatty : ${lisatty}" th:text="${lisatty.toString() + ' ' + lisatty.syntymaAikaToString()}"></p>
+    <p th:text="${lisaysohje}";
 </div>
 <div>
-    <form method="POST" action="/lisatty">
+    <form method="POST" action="/lisaa">
         Lisaa henkilö:<br/>
         <input type="text" placeholder="Etunimi" name="etunimi"/><br/>
         <input type="text" placeholder="Sukunimi" name="sukunimi"/><br/>
@@ -17,6 +34,5 @@
         <input type="submit" value="Lisää"/>
     </form>
 </div>
-<a href="/">Palaa takaisin aloitussivulle</a>
 </body>
 </html>

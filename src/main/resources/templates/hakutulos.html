@@ -5,13 +5,42 @@
     <title>Hakutulos</title>
 </head>
 <body>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Sukusivusto</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <table class="nav navbar-nav">
+                <tr>
+                    <td class="active"><a href="/"><h3>Koti</h3></a></td>
+                    <td><a href="/haku?hakusana="><h3>Haku</h3></a></td>
+                    <td><a href="/lisaa"><h3>Lisää jäsen</h3></a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</nav>
 <div>
-    <h2 th:text="'Hakutulos nimellä ' + ${hakusana}"></h2>
+    <h2>Uusi haku</h2>
+    <form method="GET" action="/haku">
+        Haku nimellä:<br/>
+        <input type="text" name="hakusana"/><br/>
+        <input type="submit" value="Hae"/>
+    </form>
+    <!--<form method="GET" action="/hakutulos">-->
+    <!--Haku syntymäajalla (VVVV-KK-PP):<br/>-->
+    <!--<input type="text" name="hakusana"/><br/>-->
+    <!--<input type="submit" value="Hae"/>-->
+    <!--</form>-->
+</div>
+<div>
+    <h2 th:if="${hakusana.isEmpty()}" th:text="'Kaikki henkilöt'"></h2>
+    <h2 th:unless="${hakusana.isEmpty()}" th:text="'Hakutulos nimellä ' + ${hakusana}"></h2>
     <ul th:each="henkilo : ${henkilot}">
         <li><a th:href="@{/henkilokortti/{id}(id=${henkilo.id})}" th:text="${henkilo.toString()}"></a></li>
     </ul>
 </div>
-<a href="/">Palaa takaisin aloitussivulle.</a>
 </body>
 </html>
 

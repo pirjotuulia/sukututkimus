@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Spring Boot Thymeleaf Hello World Example</title>
+    <title>Sukusivusto</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <link rel="stylesheet" type="text/css"
@@ -16,13 +16,16 @@
 <nav class="navbar navbar-inverse">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Sukusivusto</a>
+            <a class="navbar-brand" href="/">Sukusivusto</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Koti</a></li>
-                <li><a href="#search">Haku</a></li>
-            </ul>
+            <table class="nav navbar-nav">
+                <tr>
+                    <td class="active"><a href="/"><h3>Koti</h3></a></td>
+                    <td><a href="/haku?hakusana="><h3>Haku</h3></a></td>
+                    <td><a href="/lisaa"><h3>Lisää jäsen</h3></a></td>
+                </tr>
+            </table>
         </div>
     </div>
 </nav>
@@ -32,27 +35,16 @@
     <div class="starter-template">
         <h1>Sukusivusto</h1>
         <h2>
-            <!--<span th:text="'Tervetuloa ' + ${message} + '!'"></span>-->
+            Tervetuloa sukusivustolle. Voit hakea sukua tietokannasta, lisätä suvun jäseniä ja päivittää nykyisiä tietoja.
         </h2>
     </div>
-    <div>
-        <ul>
-            <a th:each="henkilo : ${henkilot}" th:href="@{/henkilokortti/{id}(id=${henkilo.id})}"><li th:text="${henkilo.toString()}"></li></a>
-        </ul>
-    </div>
-    <div>
-        <form method="GET" action="/hakutulos">
-            Haku nimellä:<br/>
-            <input type="text" name="hakusana"/><br/>
-            <input type="submit" value="Hae"/>
-        </form>
-        <!--<form method="GET" action="/hakutulos">-->
-            <!--Haku syntymäajalla (VVVV-KK-PP):<br/>-->
-            <!--<input type="text" name="hakusana"/><br/>-->
-            <!--<input type="submit" value="Hae"/>-->
-        <!--</form>-->
-
-    </div>
+    <!--<div>-->
+        <!--<ul>-->
+            <!--<a th:each="henkilo : ${henkilot}" th:href="@{/henkilokortti/{id}(id=${henkilo.id})}">-->
+                <!--<li th:text="${henkilo.toString()}"></li>-->
+            <!--</a>-->
+        <!--</ul>-->
+    <!--</div>-->
 </div>
 <!-- /.container -->
 

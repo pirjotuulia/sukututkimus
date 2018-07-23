@@ -5,6 +5,22 @@
     <title>Päivitä henkilökortti</title>
 </head>
 <body>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Sukusivusto</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <table class="nav navbar-nav">
+                <tr>
+                    <td class="active"><a href="/"><h3>Koti</h3></a></td>
+                    <td><a href="/haku?hakusana="><h3>Haku</h3></a></td>
+                    <td><a href="/lisaa"><h3>Lisää jäsen</h3></a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</nav>
 <div>
     <h2 th:text="${henkilo.toString()}"></h2>
     <form method="POST" th:action="@{{id}(id=${henkilo.id})}">
@@ -70,6 +86,5 @@
     </form>
 </div>
 <a th:href="@{/henkilokortti/{id} (id=${henkilo.id})}">Näytä henkilökortti.</a><br>
-<a href="/">Palaa takaisin aloitussivulle.</a>
 </body>
 </html>
