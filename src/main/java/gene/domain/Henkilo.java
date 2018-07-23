@@ -3,6 +3,8 @@ package gene.domain;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class Henkilo {
@@ -14,6 +16,7 @@ public class Henkilo {
     private Integer isa;
     private Henkilo aitiHenkilo;
     private Henkilo isaHenkilo;
+    private List<Henkilo> lapset;
 
     public Henkilo() {
     }
@@ -27,6 +30,7 @@ public class Henkilo {
         this.etunimi = etunimi;
         this.sukunimi = sukunimi;
         this.syntymaAika = syntymaAika;
+        this.lapset = new ArrayList<>();
     }
 
     public Integer getAiti() {
@@ -115,5 +119,13 @@ public class Henkilo {
             return true;
         }
         return false;
+    }
+
+    public List<Henkilo> getLapset() {
+        return lapset;
+    }
+
+    public void setLapset(List<Henkilo> lapset) {
+        this.lapset = lapset;
     }
 }

@@ -125,6 +125,7 @@ public class HenkiloDAO {
         Henkilo h = (Henkilo) jdbcTemplate.queryForObject(
                 "SELECT * FROM henkilo WHERE id=?", new Object[]{id},
                 new BeanPropertyRowMapper(Henkilo.class));
+        h.setLapset(haeLapset(id));
         return h;
     }
 
@@ -135,5 +136,25 @@ public class HenkiloDAO {
         if (henkilo.getIsa() != 0) {
             henkilo.setIsaHenkilo(haeHenkiloIdlla(String.valueOf(henkilo.getIsa())));
         }
+    }
+
+    public List<Henkilo> haeLapset(String id) {
+        List<Henkilo> henkilot = jdbcTemplate.query(
+                "SELECT * FROM henkilo WHERE isa=? OR aiti=?", new Object[]{id, id},
+                new RowMapper<Henkilo>() {
+                    @Override
+                    public Henkilo mapRow(ResultSet rs, int i) throws SQLException {
+                        Henkilo henkilo = new Henkilo(
+                                rs.getString("etunimi"),
+                                rs.getString("sukunimi"),
+                                rs.getDate("syntymaaika").toLocalDate());
+                        henkilo.setId(rs.getInt("id"));
+                        return henkilo;
+                    }
+                });
+        if (henkilot.size() < 1) {
+            return null;
+        }
+        return henkilot;
     }
 }

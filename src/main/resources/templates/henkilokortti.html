@@ -25,6 +25,14 @@
                                                                                        name="aiti">
                 </td>
             </tr>
+            <tr>
+                <td th:if="${henkilo.getLapset()==null}"></td>
+                <td th:unless="${henkilo.getLapset()==null}">Lapset: </td>
+            </tr>
+            <tr th:each="lapsi: ${henkilo.getLapset()}">
+                <td></td>
+                <td th:text="${lapsi.toString()}"></td>
+            </tr>
             <tr><input type="submit" value="Lisää"></tr>
         </table>
     </form>
