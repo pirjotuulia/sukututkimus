@@ -6,9 +6,13 @@
 </head>
 <body>
 <div>
-    <ul>
-        <a th:each="henkilo : ${henkilot}" th:href="@{/henkilokortti/{id}(id=${henkilo.id})}"><li th:text="${henkilo.toString()}"></li></a>
+    <h2 th:text="'Hakutulos nimellä ' + ${hakusana}"></h2>
+    <ul th:each="henkilo : ${henkilot}">
+        <li><a th:href="@{/henkilokortti/{id}(id=${henkilo.id})}" th:text="${henkilo.toString()}"></a></li>
     </ul>
 </div>
+<a href="/">Palaa takaisin aloitussivulle.</a>
 </body>
 </html>
+
+<!--<a th:each="henkilo : ${henkilot}" th:href="@{/henkilokortti/{id}(id=${henkilo.id})}"><li th:text="${henkilo.toString()}"></li></a>-->

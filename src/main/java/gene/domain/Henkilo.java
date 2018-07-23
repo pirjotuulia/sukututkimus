@@ -11,6 +11,7 @@ public class Henkilo {
     private String etunimi;
     private String sukunimi;
     private LocalDate syntymaAika;
+    private LocalDate kuolinAika;
     private int id;
     private Integer aiti;
     private Integer isa;
@@ -25,7 +26,9 @@ public class Henkilo {
 
     @Override
     public String toString() {
-        return etunimi + " " + sukunimi + " " + syntymaAika.getDayOfMonth() + "." + syntymaAika.getMonthValue() + "." + syntymaAika.getYear() + ", id:" + id;
+        StringBuilder sb = new StringBuilder();
+        sb.append(etunimi + " " + sukunimi + " (id: "+ id + ")");
+        return sb.toString();
     }
 
     public Henkilo(String etunimi, String sukunimi, LocalDate syntymaAika) {
@@ -160,5 +163,29 @@ public class Henkilo {
 
     public void setLapset(List<Henkilo> lapset) {
         this.lapset = lapset;
+    }
+
+    public LocalDate getKuolinAika() {
+        return kuolinAika;
+    }
+
+    public void setKuolinAika(LocalDate kuolinAika) {
+        this.kuolinAika = kuolinAika;
+    }
+
+    public String syntymaAikaToString() {
+        StringBuilder sb = new StringBuilder("s. ");
+        sb.append(syntymaAika.getDayOfMonth() + "." + syntymaAika.getMonthValue() + "." + syntymaAika.getYear());
+        return sb.toString();
+    }
+
+    public String kuolinAikaToString() {
+        StringBuilder sb = new StringBuilder("k. ");
+        if (kuolinAika!=null) {
+            sb.append(kuolinAika.getDayOfMonth() + "." + kuolinAika.getMonthValue() + "." + kuolinAika.getYear());
+        } else {
+            sb.append("-");
+        }
+        return sb.toString();
     }
 }

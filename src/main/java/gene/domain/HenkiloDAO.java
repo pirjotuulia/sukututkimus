@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,9 @@ public class HenkiloDAO {
     }
 
     public List<Henkilo> haetutHenkilot(String hakusana) {
+        if (hakusana.contains(" ") || hakusana.contains(",")) {
+//            TODO: jos haetaan koko nimellä (välissä pilkku tai välilyönti)
+        }
         List<Henkilo> henkilot = jdbcTemplate.query(
                 "SELECT * FROM henkilo WHERE etunimi LIKE '%" + hakusana + "%' or sukunimi LIKE '%" + hakusana + "%'",
                 new RowMapper<Henkilo>() {
@@ -68,8 +72,9 @@ public class HenkiloDAO {
         return null;
     }
 
-    public Henkilo paivitaHenkilo(Henkilo paivitettava, Map<String, String> paivitettavat) {
-        if (haeHenkilo(paivitettava) != null) {
+    public Henkilo paivitaHenkilo(String id, Map<String, String> paivitettavat) {
+        Henkilo paivitettava = haeHenkiloIdlla(id);
+        if (paivitettava != null) {
             List<String> avaimet = new ArrayList<>();
             for (String kentta : paivitettavat.keySet()) {
                 if (!paivitettavat.get(kentta).isEmpty()) {
@@ -95,6 +100,12 @@ public class HenkiloDAO {
             int onnistui = jdbcTemplate.update(sql.toString(), arvot);
             if (onnistui > 0) {
                 paivitettava = haeHenkiloIdlla(String.valueOf(paivitettava.getId()));
+                if (avaimet.contains("puoliso") && paivitettava.getPuolisoHenkilo().getPuoliso() == null || paivitettava.getPuolisoHenkilo().getPuoliso() != paivitettava.getId()) {
+                    Map<String, String> puolisonPaivitettavat = new HashMap<>();
+                    puolisonPaivitettavat.put("puoliso", String.valueOf(paivitettava.getId()));
+                    paivitaHenkilo(String.valueOf(paivitettava.getPuolisoHenkilo().getId()), puolisonPaivitettavat);
+                }
+                lisaaLaheisetHenkiloina(paivitettava);
                 return paivitettava;
             }
         }
@@ -121,14 +132,20 @@ public class HenkiloDAO {
         return henkilot;
     }
 
-    public Henkilo haeHenkiloIdlla(String id) {
+    public Henkilo kaikkiTiedotIdlla(String id) {
+        Henkilo h = haeHenkiloIdlla(id);
+        lisaaLaheisetHenkiloina(h);
+        return h;
+    }
+
+    private Henkilo haeHenkiloIdlla(String id) {
         Henkilo h = (Henkilo) jdbcTemplate.queryForObject(
                 "SELECT * FROM henkilo WHERE id=?", new Object[]{id},
                 new BeanPropertyRowMapper(Henkilo.class));
         return h;
     }
 
-    public void lisaaLaheisetHenkiloina(Henkilo henkilo) {
+    private void lisaaLaheisetHenkiloina(Henkilo henkilo) {
         if (henkilo.getAiti() != 0) {
             henkilo.setAitiHenkilo(haeHenkiloIdlla(String.valueOf(henkilo.getAiti())));
         }

@@ -6,37 +6,33 @@
 </head>
 <body>
 <div>
-    <p th:text="${henkilo.toString()}"></p>
+    <h2 th:text="${henkilo.toString()}"></h2>
+    <h3 th:text="${henkilo.syntymaAikaToString()+ ' ' +henkilo.kuolinAikaToString()}"></h3>
     <form method="POST" th:action="@{{id}(id=${henkilo.id})}">
         <table>
             <tr>
                 <td>Puoliso:</td>
                 <td th:if="${henkilo.puoliso()}"><a th:href="@{/henkilokortti/{id}(id=${henkilo.puolisoHenkilo.id})}"
-                                                        th:text="${henkilo.puolisoHenkilo.toString()}"></a></td>
-                <td th:unless="${henkilo.puoliso()}">Henkilöllä ei ole puolisoa tai puoliso ei ole tiedossa. <input type="text"
-                                                                                    placeholder="Puolison id"
-                                                                                    name="puoliso">
-                </td>
+                                                    th:text="${henkilo.puolisoHenkilo.toString()}"></a></td>
+                <td th:unless="${henkilo.puoliso()}">Henkilöllä ei ole puolisoa tai puoliso ei ole tiedossa.</td>
+                <td th:unless="${henkilo.puoliso()}"><input type="text" placeholder="Puolison id" name="puoliso"></td>
             </tr>
             <tr>
                 <td>Isä:</td>
                 <td th:if="${henkilo.isaTiedossa()}"><a th:href="@{/henkilokortti/{id}(id=${henkilo.isaHenkilo.id})}"
                                                         th:text="${henkilo.isaHenkilo.toString()}"></a></td>
-                <td th:unless="${henkilo.isaTiedossa()}">Isä ei ole tiedossa.<input type="text"
-                                                                                    placeholder="Isän id"
-                                                                                    name="isa">
-                </td>
-            </tr>
+                <td th:unless="${henkilo.isaTiedossa()}">Isä ei ole tiedossa.</td>
+                <td th:unless="${henkilo.isaTiedossa()}"><input type="text" placeholder="Isän id" name="isa"></td>
             <tr>
                 <td>Äiti:</td>
                 <td th:if="${henkilo.aitiTiedossa()}"><a th:href="@{/henkilokortti/{id}(id=${henkilo.aitiHenkilo.id})}"
                                                          th:text="${henkilo.aitiHenkilo.toString()}"></a></td>
-                <td th:unless="${henkilo.aitiTiedossa()}">Äiti ei ole tiedossa. <input type="text"
-                                                                                       placeholder="Äidin id"
-                                                                                       name="aiti">
-                </td>
+                <td th:unless="${henkilo.aitiTiedossa()}">Äiti ei ole tiedossa.</td>
+                <td th:unless="${henkilo.aitiTiedossa()}"><input type="text" placeholder="Äidin id" name="aiti"></td>
             </tr>
-            <tr th:unless="${henkilo.isaTiedossa() || henkilo.aitiTiedossa() || henkilo.puoliso()}">
+            <tr th:unless="${henkilo.isaTiedossa() && henkilo.aitiTiedossa() && henkilo.puoliso()}">
+                <td></td>
+                <td></td>
                 <td><input type="submit" value="Lisää"></td>
             </tr>
             <tr>

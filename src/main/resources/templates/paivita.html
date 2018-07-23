@@ -6,7 +6,7 @@
 </head>
 <body>
 <div>
-    <p th:text="${henkilo.toString()}"></p>
+    <h2 th:text="${henkilo.toString()}"></h2>
     <form method="POST" th:action="@{{id}(id=${henkilo.id})}">
         <table>
             <tr>
@@ -25,10 +25,17 @@
             </tr>
             <tr>
                 <td>Syntymäaika:</td>
-                <td th:text="${henkilo.syntymaAika.toString()}"></td>
+                <td th:text="${henkilo.syntymaAikaToString()}"></td>
                 <td><input type="text"
                            placeholder="VVVV-KK-PP"
                            name="syntymaaika"></td>
+            </tr>
+            <tr>
+                <td>Kuolinaika:</td>
+                <td th:text="${henkilo.kuolinAikaToString()}"></td>
+                <td><input type="text"
+                           placeholder="VVVV-KK-PP"
+                           name="kuolinaika"></td>
             </tr>
             <tr>
                 <td>Isä:</td>

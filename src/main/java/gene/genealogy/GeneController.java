@@ -41,37 +41,35 @@ public class GeneController {
 
     @RequestMapping(value = "/henkilokortti/{id}", method = RequestMethod.GET)
     public String naytaHenkilo(@PathVariable String id, Model model) {
-        Henkilo henkilo = henkiloDAO.haeHenkiloIdlla(id);
-        henkiloDAO.lisaaLaheisetHenkiloina(henkilo);
+        Henkilo henkilo = henkiloDAO.kaikkiTiedotIdlla(id);
         model.addAttribute("henkilo", henkilo);
         return "henkilokortti";
     }
 
     @RequestMapping(value = "/henkilokortti/{id}", method = RequestMethod.POST)
     public String lisaaTietoja(@PathVariable String id, @RequestParam Map<String, String> arvot, Model model) {
-        Henkilo paivitettava = henkiloDAO.haeHenkiloIdlla(id);
-        paivitettava = henkiloDAO.paivitaHenkilo(paivitettava, arvot);
+        Henkilo paivitettava = henkiloDAO.paivitaHenkilo(id, arvot);
         model.addAttribute("lisatty", paivitettava);
         return "redirect:/henkilokortti/{id}";
     }
 
     @RequestMapping(value = "/paivita/{id}", method = RequestMethod.GET)
     public String naytaPaivita(@PathVariable String id, Model model) {
-        Henkilo henkilo = henkiloDAO.haeHenkiloIdlla(id);
+        Henkilo henkilo = henkiloDAO.kaikkiTiedotIdlla(id);
         model.addAttribute("henkilo", henkilo);
         return "paivita";
     }
 
     @RequestMapping(value = "/paivita/{id}", method = RequestMethod.POST)
     public String paivita(@PathVariable String id, @RequestParam Map<String, String> paivitettavat, Model model) {
-        Henkilo paivitettava = henkiloDAO.haeHenkiloIdlla(id);
-        paivitettava = henkiloDAO.paivitaHenkilo(paivitettava, paivitettavat);
+        Henkilo paivitettava = henkiloDAO.paivitaHenkilo(id, paivitettavat);
         model.addAttribute("lisatty", paivitettava);
         return "redirect:/henkilokortti/{id}";
     }
 
     @RequestMapping("/hakutulos")
     public String haku(@RequestParam String hakusana, Model model) {
+        model.addAttribute("hakusana", hakusana);
         if (hakusana.contains("[0-9]")) {
 //            haeSyntymaAjalla();
         } else {

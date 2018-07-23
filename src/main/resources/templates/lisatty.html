@@ -6,9 +6,16 @@
 </head>
 <body>
 <div>
-    <ol>
-        <li th:each="lisatty : ${lisatty}" th:text="${lisatty.toString()}"></li>
-    </ol>
+    <p th:each="lisatty : ${lisatty}" th:text="${lisatty.toString() + ' ' + lisatty.syntymaAikaToString()}"></p>
+</div>
+<div>
+    <form method="POST" action="/lisatty">
+        Lisaa henkilö:<br/>
+        <input type="text" placeholder="Etunimi" name="etunimi"/><br/>
+        <input type="text" placeholder="Sukunimi" name="sukunimi"/><br/>
+        <input type="text" placeholder="Syntymäaika" name="syntymaaika"/>(VVVV-KK-PP)<br/>
+        <input type="submit" value="Lisää"/>
+    </form>
 </div>
 <a href="/">Palaa takaisin aloitussivulle</a>
 </body>
