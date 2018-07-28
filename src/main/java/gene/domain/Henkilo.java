@@ -4,10 +4,12 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Component
-public class Henkilo {
+public class Henkilo implements Comparable<Henkilo> {
     private String etunimi;
     private String sukunimi;
     private LocalDate syntymaAika;
@@ -19,7 +21,7 @@ public class Henkilo {
     private Henkilo aitiHenkilo;
     private Henkilo isaHenkilo;
     private Henkilo puolisoHenkilo;
-    private List<Henkilo> lapset;
+    private List<Henkilo> lapset = new ArrayList<>();
 
     public Henkilo() {
     }
@@ -27,7 +29,7 @@ public class Henkilo {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(etunimi + " " + sukunimi + " (id: "+ id + ")");
+        sb.append(etunimi + " " + sukunimi + " (id: " + id + ")");
         return sb.toString();
     }
 
@@ -39,7 +41,7 @@ public class Henkilo {
     }
 
     public Integer getAiti() {
-        if (aiti!=null) {
+        if (aiti != null) {
             return aiti;
         }
         return 0;
@@ -52,7 +54,7 @@ public class Henkilo {
     }
 
     public Integer getIsa() {
-        if (isa!=null) {
+        if (isa != null) {
             return isa;
         }
         return 0;
@@ -65,7 +67,7 @@ public class Henkilo {
     }
 
     public Integer getPuoliso() {
-        if (puoliso!=null) {
+        if (puoliso != null) {
             return puoliso;
         }
         return 0;
@@ -137,27 +139,30 @@ public class Henkilo {
     }
 
     public boolean isaTiedossa() {
-        if (isa!=null) {
+        if (isa != null) {
             return true;
         }
         return false;
     }
 
     public boolean aitiTiedossa() {
-        if (aiti!=null) {
+        if (aiti != null) {
             return true;
         }
         return false;
     }
 
     public boolean puoliso() {
-        if (puoliso!=null) {
+        if (puoliso != null) {
             return true;
         }
         return false;
     }
 
     public List<Henkilo> getLapset() {
+        if (lapset!=null) {
+            Collections.sort(lapset);
+        }
         return lapset;
     }
 
@@ -181,11 +186,35 @@ public class Henkilo {
 
     public String kuolinAikaToString() {
         StringBuilder sb = new StringBuilder("k. ");
-        if (kuolinAika!=null) {
+        if (kuolinAika != null) {
             sb.append(kuolinAika.getDayOfMonth() + "." + kuolinAika.getMonthValue() + "." + kuolinAika.getYear());
         } else {
             sb.append("-");
         }
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(Henkilo henkilo) {
+        return this.syntymaAika.compareTo(henkilo.syntymaAika);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Henkilo henkilo = (Henkilo) o;
+        return id == henkilo.id &&
+                Objects.equals(etunimi, henkilo.etunimi) &&
+                Objects.equals(sukunimi, henkilo.sukunimi) &&
+                Objects.equals(syntymaAika, henkilo.syntymaAika) &&
+                Objects.equals(aiti, henkilo.aiti) &&
+                Objects.equals(isa, henkilo.isa);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(etunimi, sukunimi, syntymaAika, id);
     }
 }

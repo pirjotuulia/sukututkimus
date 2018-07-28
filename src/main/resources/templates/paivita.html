@@ -14,7 +14,7 @@
             <table class="nav navbar-nav">
                 <tr>
                     <td class="active"><a href="/"><h3>Koti</h3></a></td>
-                    <td><a href="/haku?hakusana="><h3>Haku</h3></a></td>
+                    <td><a href="/haku"><h3>Haku</h3></a></td>
                     <td><a href="/lisaa"><h3>Lisää jäsen</h3></a></td>
                 </tr>
             </table>
@@ -84,7 +84,23 @@
             </tr>
         </table>
     </form>
+    <div>
+        <a th:href="@{/henkilokortti/{id} (id=${henkilo.id})}">Näytä henkilökortti.</a><br><br>
+    </div>
+    <form th:unless="${poistoyritys}" method="GET" th:action="@{/poista/{id}(id=${henkilo.id})}">
+        Poista kaikki tämän henkilön tiedot tietokannasta.<br>
+        Tietoja ei voi palauttaa poiston jälkeen.<br>
+        <input type="submit" value="Poista">
+    </form>
+    <form th:if="${poistoyritys}" method="GET" th:action="@{/poista/{id}/varmistus(id=${henkilo.id})}">
+        Haluatko varmasti poistaa kaikki ylläolevat tiedot pysyvästi tietokannasta?
+        <input type="submit" value="Poista">
+    </form>
+    <form th:if="${poistoyritys}" method="GET" th:action="@{/paivita/{id}(id=${henkilo.id})}">
+        Peruuta poisto.
+        <input type="submit" value="Peruuta">
+    </form>
 </div>
-<a th:href="@{/henkilokortti/{id} (id=${henkilo.id})}">Näytä henkilökortti.</a><br>
+
 </body>
 </html>

@@ -22,8 +22,18 @@
     </div>
 </nav>
 <div>
-    <p th:each="lisatty : ${lisatty}" th:text="${lisatty.toString() + ' ' + lisatty.syntymaAikaToString()}"></p>
-    <p th:text="${lisaysohje}";
+    <div th:if="${lisatty}">
+        <p th:if="${lisatty}" th:each="lisatty : ${lisatty}">
+            <a th:href="@{/henkilokortti/{id}(id=${lisatty.id})}"
+               th:text="${lisatty.toString() + ' ' + lisatty.syntymaAikaToString()}"></a>
+        </p>
+    </div>
+    <div th:unless="${lisatty}">
+        <p th:text="${virhe}"></p>
+        <p th:each="loytynyt : ${loytynyt}"><a th:href="@{/henkilokortti/{id}(id=${loytynyt.id})}"
+                                               th:text="${loytynyt.toString()}"></a></p>
+    </div>
+    <p th:text="${lisaysohje}"></p>
 </div>
 <div>
     <form method="POST" action="/lisaa">

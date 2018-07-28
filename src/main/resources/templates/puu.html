@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Hakutulos</title>
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Sukusivusto</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <table class="nav navbar-nav">
+                <tr>
+                    <td class="active"><a href="/"><h3>Koti</h3></a></td>
+                    <td><a href="/haku"><h3>Haku</h3></a></td>
+                    <td><a href="/lisaa"><h3>Lisää jäsen</h3></a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</nav>
+<div class="puu">
+    <table>
+        <tr th:each="puulista : ${puuListat}">
+            <td width="100" th:each="puumaja: ${puulista}"><a th:if="${puumaja.getId()>0}" th:href="@{/henkilokortti/{id}(id=${puumaja.getId()})}"
+                                                  th:text="${henkilotPuussa.get(puumaja).toString()}"></a></td>
+        </tr>
+    </table>
+</div>
+<script>
+    // $(function() {
+    //     var puuMapissa = ${puuMapissa};
+    //     puuMapissa.forEach({
+    //
+    //     })
+    //     for (var i = 0; i < puumaja.size; i++) {
+    //
+    //     }
+    //     $('<tr></tr>').setAttribute("class","rivi" + ).appendTo('.kehys');
+    //     $('')
+    // });
+</script>
+</body>
+</html>

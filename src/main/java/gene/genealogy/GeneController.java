@@ -7,6 +7,8 @@ import java.util.Map;
 
 import gene.domain.Henkilo;
 import gene.domain.HenkiloDAO;
+import gene.domain.Puumaja;
+import gene.domain.Puunrakentaja;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -19,9 +21,11 @@ public class GeneController {
     private String message;
     private List<Henkilo> henkilot;
     private HenkiloDAO henkiloDAO;
+    private Puunrakentaja pr;
 
-    public GeneController(@Autowired HenkiloDAO henkiloDAO) {
+    public GeneController(@Autowired HenkiloDAO henkiloDAO, Puunrakentaja pr) {
         this.henkiloDAO = henkiloDAO;
+        this.pr = pr;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -40,8 +44,14 @@ public class GeneController {
     @RequestMapping(value = "/lisaa", method = RequestMethod.POST)
     public String lisaa(@RequestParam String etunimi, String sukunimi, String syntymaaika, Model model) {
         Henkilo lisattava = new Henkilo(etunimi, sukunimi, LocalDate.parse(syntymaaika));
-        lisattava = henkiloDAO.lisaaHenkilo(lisattava);
-        model.addAttribute("lisatty", lisattava);
+        boolean lisatty = henkiloDAO.lisaaHenkilo(lisattava);
+        model.addAttribute("onnistui", lisatty);
+        if (lisatty) {
+            model.addAttribute("lisatty", lisattava);
+        } else {
+            model.addAttribute("virhe", "Lisääminen ei onnistunut, koska henkilö on jo tietokannassa.");
+            model.addAttribute("loytynyt", henkiloDAO.haeHenkilo(lisattava));
+        }
         return "lisatty";
     }
 
@@ -73,8 +83,11 @@ public class GeneController {
         return "redirect:/henkilokortti/{id}";
     }
 
-    @RequestMapping("/haku")
-    public String haku(@RequestParam String hakusana, Model model) {
+    @RequestMapping(value="/haku", method = RequestMethod.GET)
+    public String haku(@RequestParam(required = false) String hakusana, Model model) {
+        if (hakusana== null) {
+            hakusana="";
+        }
         model.addAttribute("hakusana", hakusana);
         if (hakusana.contains("[0-9]")) {
 //            haeSyntymaAjalla();
@@ -87,5 +100,31 @@ public class GeneController {
             }
         }
         return "hakutulos";
+    }
+
+    @RequestMapping(value = "/poista/{id}", method = RequestMethod.GET)
+    public String poistoyritys(@PathVariable String id, Model model) {
+        Henkilo henkilo = henkiloDAO.kaikkiTiedotIdlla(id);
+        model.addAttribute("henkilo", henkilo);
+        model.addAttribute("poistoyritys", true);
+        return "paivita";
+    }
+
+    @RequestMapping(value = "/poista/{id}/varmistus", method = RequestMethod.GET)
+    public String poista(@PathVariable String id, Model model) {
+        henkiloDAO.poistaHenkilo(id);
+        model.addAttribute("poistettu", "Henkilötiedot id:llä " + id + " on poistettu tietokannasta.");
+        return "redirect:/haku?hakusana=";
+    }
+
+    @RequestMapping(value="/puu/{id}", method = RequestMethod.GET)
+    public String naytaPuu(@PathVariable int id, Model model) {
+        List<Integer> isalinja = pr.palautaIsalinja(id);
+        List<Puumaja> puumajat = pr.luoPuuYlhaalta(isalinja);
+        List<List<Puumaja>> puuListat = pr.puunSukupolvet(puumajat);
+        Map<Puumaja, Henkilo> henkilotPuussa = henkiloDAO.henkilotPuussa(puuListat);
+        model.addAttribute("puuListat", puuListat);
+        model.addAttribute("henkilotPuussa", henkilotPuussa);
+        return "puu";
     }
 }

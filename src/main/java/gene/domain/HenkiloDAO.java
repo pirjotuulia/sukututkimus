@@ -1,14 +1,12 @@
 package gene.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,16 +58,24 @@ public class HenkiloDAO {
         return henkilot;
     }
 
-    public Henkilo lisaaHenkilo(Henkilo h) {
-        if (haeHenkilo(h) == null) {
-            int onnistui = jdbcTemplate.update("INSERT INTO henkilo(etunimi, sukunimi, syntymaaika) VALUES (?, ?, ?);", new Object[]{h.getEtunimi(), h.getSukunimi(), h.getSyntymaAika()});
-            if (onnistui == 0) {
-                return null;
+    public boolean lisaaHenkilo(Henkilo h) {
+        if (haeHenkilo(h) == null) {//tällä hetkellä tietokantaan ei voi lisätä toista henkilöä, jolla on sama etunimi, sukunimi ja syntymäaika kuin jo kannassa olevalla henkilöllä. Tämän toki pitäisi olla mahdollista myöhemmin, mutta varoituksen kanssa.
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            PreparedStatementCreator psc = connection -> {
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO henkilo(etunimi, sukunimi, syntymaaika) VALUES (?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, h.getEtunimi());
+                ps.setString(2, h.getSukunimi());
+                ps.setDate(3, Date.valueOf(h.getSyntymaAika()));
+                return ps;
+            };
+            int onnistui = jdbcTemplate.update(psc, keyHolder);
+            if (onnistui > 0) {
+                int id = keyHolder.getKey().intValue();
+                h.setId(id);
+                return true;
             }
-            h = (haeHenkilo(h).get(0));
-            return h;
         }
-        return null;
+        return false;
     }
 
     public Henkilo paivitaHenkilo(String id, Map<String, String> paivitettavat) {
@@ -133,6 +139,14 @@ public class HenkiloDAO {
         return henkilot;
     }
 
+    public boolean poistaHenkilo(String id) {
+        int onnistui = jdbcTemplate.update("DELETE FROM henkilo WHERE id=?", id);
+        if (onnistui > 1) {
+            return true;
+        }
+        return false;
+    }
+
     public Henkilo kaikkiTiedotIdlla(String id) {
         Henkilo h = haeHenkiloIdlla(id);
         lisaaLaheisetHenkiloina(h);
@@ -160,22 +174,34 @@ public class HenkiloDAO {
     }
 
     public List<Henkilo> haeLapset(String id) {
-        List<Henkilo> henkilot = jdbcTemplate.query(
+        List<Henkilo> henkilot = (List<Henkilo>) jdbcTemplate.query(
                 "SELECT * FROM henkilo WHERE isa=? OR aiti=?", new Object[]{id, id},
-                new RowMapper<Henkilo>() {
-                    @Override
-                    public Henkilo mapRow(ResultSet rs, int i) throws SQLException {
-                        Henkilo henkilo = new Henkilo(
-                                rs.getString("etunimi"),
-                                rs.getString("sukunimi"),
-                                rs.getDate("syntymaaika").toLocalDate());
-                        henkilo.setId(rs.getInt("id"));
-                        return henkilo;
-                    }
-                });
+                new BeanPropertyRowMapper(Henkilo.class));
         if (henkilot.size() < 1) {
             return null;
         }
         return henkilot;
+    }
+
+    public Integer haeVanhempi(int id, String vanhempi) {
+        Integer h = null;
+        try {
+            h = (Integer) jdbcTemplate.queryForObject("SELECT " + vanhempi +" FROM henkilo WHERE id=?;", new Object[]{id}, Integer.class);
+        } catch (Exception e) {
+
+        }
+        return h;
+    }
+
+    public Map<Puumaja, Henkilo> henkilotPuussa(List<List<Puumaja>> puumajat) {
+        Map<Puumaja, Henkilo> henkilotPuussa = new HashMap();
+        for (List<Puumaja> lista : puumajat) {
+            for (Puumaja p : lista) {
+                if (p.getId() > 0) {
+                    henkilotPuussa.put(p, haeHenkiloIdlla(String.valueOf(p.getId())));
+                }
+            }
+        }
+        return henkilotPuussa;
     }
 }
