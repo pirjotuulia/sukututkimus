@@ -7,11 +7,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class HenkiloDAO {
@@ -179,6 +177,8 @@ public class HenkiloDAO {
                 new BeanPropertyRowMapper(Henkilo.class));
         if (henkilot.size() < 1) {
             return null;
+        } else {
+            Collections.sort(henkilot);
         }
         return henkilot;
     }

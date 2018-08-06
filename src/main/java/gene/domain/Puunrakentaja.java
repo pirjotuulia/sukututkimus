@@ -36,38 +36,63 @@ public class Puunrakentaja {
     public List<Puumaja> luoPuuYlhaalta(List<Integer> ylalinja) {
         List<Puumaja> puumajat = new ArrayList<>();
         for (int i = ylalinja.size() - 1; i >= 0; i--) {//runko yksi sukupolvi kerrallaan
+            //vanhempi
             Henkilo vanhempi = henkiloDAO.kaikkiTiedotIdlla(String.valueOf(ylalinja.get(i)));
-            Puumaja vanhemmanPuumaja = null;
-            if (puumajat.stream().mapToInt(p -> p.getId()).noneMatch(id -> id == vanhempi.getId())) {
-                vanhemmanPuumaja = new Puumaja(vanhempi.getId(), 0 - i, 0, 0, 0);
-                puumajat.add(new Puumaja(vanhempi.getId(), 0 - i, 0, 0, 0));//vanhempi (sukuun kuuluva)
-                if (vanhempi.puoliso()) {
-                    Henkilo puoliso = vanhempi.getPuolisoHenkilo();
+            Puumaja vanhemmanPuumaja = onkoJoPuussa(vanhempi.getId(), puumajat);
+            if (vanhemmanPuumaja == null) {
+                vanhemmanPuumaja = new Puumaja(vanhempi.getId(), 0 - i, 0, 0, 0);//vanhempi (sukuun kuuluva)
+                puumajat.add(vanhemmanPuumaja);
+            }
+            //puoliso
+            if (vanhempi.puoliso()) {
+                Puumaja puolisonPuumaja = onkoJoPuussa(vanhempi.getPuoliso(), puumajat);
+                if (puolisonPuumaja == null) {
+                    puolisonPuumaja = new Puumaja(vanhempi.getPuoliso(), 0 - i, 1, 0, 0);
                     int puolisonIndeksi = (puumajat.indexOf(vanhemmanPuumaja)) + 1;
-                    puumajat.add(puolisonIndeksi, new Puumaja(puoliso.getId(), 0 - i, 1, 0, 0));// vanhempi (sukuun naitu)
+                    puumajat.add(puolisonIndeksi, puolisonPuumaja);// vanhempi (sukuun naitu)
                 }
             }
             if (i > 0) {
                 int linjanSeuraavanId = ylalinja.get(i - 1);
-                List<Henkilo> lapset = vanhempi.getLapset();
-                if (lapset.size() > 1) {
-                    int nollaLinjanIndeksi = -1;
-                    for (Henkilo lapsi : lapset) {
-                        if (lapsi.getId() == linjanSeuraavanId) {
-                            nollaLinjanIndeksi = lapset.indexOf(lapsi);
-                        }
+                lisaaLapsetPuuhun(puumajat, vanhemmanPuumaja, linjanSeuraavanId);
+            }
+        }
+        return puumajat;
+    }
+
+    private Puumaja onkoJoPuussa(int id, List<Puumaja> puumajat) {
+        Optional<Puumaja> onkoJoPuussa = puumajat.stream().filter(p -> p.getId() == id).findAny();
+        Puumaja puumaja = null;
+        if (onkoJoPuussa.isPresent()) {
+            puumaja = onkoJoPuussa.get();
+        }
+        return puumaja;
+    }
+
+    public void lisaaLapsetPuuhun(List<Puumaja> puumajat, Puumaja p, int linjanSeuraavanId) {
+        if (p.getId() > 0) {
+            List<Henkilo> lapset = henkiloDAO.haeLapset(String.valueOf(p.getId()));
+            if (lapset.size() == 0) {
+                return;
+            }
+            if (p.onNollasolu()) {
+                int nollaLinjanIndeksi = -1;
+                for (Henkilo lapsi : lapset) {
+                    if (lapsi.getId() == linjanSeuraavanId) {
+                        nollaLinjanIndeksi = lapset.indexOf(lapsi);
                     }
-                    int sisarus = nollaLinjanIndeksi;
-                    for (int j = 0; j < lapset.size(); j++) {
-                        puumajat.add(new Puumaja(lapset.get(j).getId(), 0 - i + 1, 0, j - nollaLinjanIndeksi, 0));//lapset
-                        if (lapset.get(j).puoliso()) {
-                            puumajat.add(new Puumaja(lapset.get(j).getPuoliso(), 0 - i + 1, 1, j - nollaLinjanIndeksi, 0));
-                        }
+                }
+                int sisarus = nollaLinjanIndeksi;
+                for (int j = 0; j < lapset.size(); j++) {
+                    if (onkoJoPuussa(lapset.get(j).getId(), puumajat) == null) {
+                        puumajat.add(new Puumaja(lapset.get(j).getId(), p.getSukupolvi() + 1, 0, j - nollaLinjanIndeksi, p.getPystylinja()));//lapset
+                    }
+                    if (lapset.get(j).puoliso()&&onkoJoPuussa(lapset.get(j).getPuoliso(), puumajat) == null) {
+                        puumajat.add(new Puumaja(lapset.get(j).getPuoliso(), p.getSukupolvi() + 1, 1, 0, p.getPystylinja()));
                     }
                 }
             }
         }
-        return puumajat;
     }
 
     public List<List<Puumaja>> puunSukupolvet(List<Puumaja> puumajat) {
